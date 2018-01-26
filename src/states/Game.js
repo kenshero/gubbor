@@ -19,7 +19,9 @@ gameState.state.prototype = {
     this.currentTrails = {}
     this.isPosidon = false
     this.score = 0
-    this.hp = 3
+    this.timeOut = 10
+    this.highScore = 0
+    this.uiBlock = false
     //keyboard cursors
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.xBtn = game.input.keyboard.addKey(Phaser.Keyboard.X)
@@ -63,8 +65,10 @@ gameState.state.prototype = {
     this.hotheads.enableBody = true
 
     var styleScore = {font: '22px Arial', fill: '#fff'};
-    this.scoreLabel = this.add.text(10, 10, `Score: ${this.score}`, styleScore);
-    this.hpLabel = this.add.text(10, 40, `HP: ${this.hp}`, styleScore);
+    this.scoreLabel = this.add.text(10, 10, this.score, styleScore);
+
+    this.timeOutLabel = this.add.text(game.world.centerX, 0, this.timeOut, styleScore)
+    this.timeOutLabel.anchor.setTo(0.5, 0)
 
     this.vegetGenerationTimer = game.time.create(false);
     this.vegetGenerationTimer.start();
@@ -75,6 +79,7 @@ gameState.state.prototype = {
     this.scheduleHotHeadGeneration();
 
     // this.checkLifeHotHead = game.time.events.loop(Phaser.Timer.HALF , this.survivePlant, this)
+    this.timeOver = game.time.events.loop(Phaser.Timer.SECOND , this.reduceTime, this)
   },
   render: function(){
     // game.debug.text("fps :" + game.time.fps, 2, 14, "#00ff00")
@@ -191,7 +196,7 @@ gameState.state.prototype = {
   generateRandomHotHead: function() {
     //position
     var y = Math.floor((Math.random() * 220) + 220);
-    var x = Math.floor((Math.random() * game.world.width - 50) + 1);
+    var x = Math.floor((Math.random() * game.world.width) + 1);
 
     this.createHotHead(x, y);
   },
@@ -262,7 +267,66 @@ gameState.state.prototype = {
       } else if(enemy.key === "hothead") {
         this.score += 2
       }
-      this.scoreLabel.text = `Score: ${this.score}`
+      this.scoreLabel.text = this.score
+    }
+  },
+  reduceTime: function() {
+    this.timeOut--
+    this.timeOutLabel.text = this.timeOut
+    if(this.timeOut <= 0) {
+      this.gameOver()
+      return
+    }
+  },
+  gameOver: function() {
+    this.updateHighscore()
+    game.time.events.remove(this.timeOver)
+
+    //game over overlay
+    this.overlay = this.add.bitmapData(game.width, game.height);
+    this.overlay.ctx.fillStyle = '#000';
+    this.overlay.ctx.fillRect(0, 0, game.width, game.height);
+
+    //sprite for the overlay
+    this.panel = this.add.sprite(0, game.height, this.overlay);
+    this.panel.alpha = 0.55;
+
+    //overlay raising tween animation
+    var gameOverPanel = this.add.tween(this.panel);
+    gameOverPanel.to({y: 0}, 500);
+
+    //stop all movement after the overlay reaches the top
+    gameOverPanel.onComplete.add(function(){
+      var style = {font: '30px Arial', fill: '#fff'};
+      this.add.text(game.width/2, game.height/2, 'GAME OVER', style).anchor.setTo(0.5);
+
+      style = {font: '20px Arial', fill: '#fff'};
+      this.add.text(game.width/2, game.height/2 + 50, 'High score: ' + this.highScore, style).anchor.setTo(0.5);
+
+      this.add.text(game.width/2, game.height/2 + 80, 'Your score: ' + this.score, style).anchor.setTo(0.5);
+
+      style = {font: '10px Arial', fill: '#fff'};
+      this.add.text(game.width/2, game.height/2 + 120, 'Tap to play again', style).anchor.setTo(0.5);
+
+      this.game.input.onDown.addOnce(this.restart, this);
+
+
+    }, this);
+
+    gameOverPanel.start();
+  },
+  restart: function(){
+    game.state.start('GameState')
+  },
+  updateHighscore: function(){
+    this.highScore = +localStorage.getItem('GubborhighScore');
+
+    //do we have a new high score
+    if(this.highScore < this.score){
+      this.highScore = this.score;
+
+      //save new high score
+      localStorage.setItem('GubborhighScore', this.highScore);
     }
   }
 
