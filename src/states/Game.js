@@ -12,11 +12,14 @@ gameState.state.prototype = {
   init: function() {
     this.PLAYER_SPEED = 90
     this.VEGET_FREQUENCY = 3
-    this.HOTHEAD_FREQUENCY = 8
+    this.HOTHEAD_FREQUENCY = 12
     this.xMarking = false
     this.timeOutMarking = 4
     this.markPosition = {}
     this.currentTrails = {}
+    this.isPosidon = false
+    this.score = 0
+    this.hp = 3
     //keyboard cursors
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.xBtn = game.input.keyboard.addKey(Phaser.Keyboard.X)
@@ -36,6 +39,7 @@ gameState.state.prototype = {
     this.background = this.add.tileSprite(0, 0, game.world.width, game.world.height, 'grass')
 
     this.well = this.add.sprite(game.world.width - 100, 0, 'well')
+    game.physics.arcade.enable(this.well)
 
     this.player = this.add.sprite(game.world.width - 100, 20, 'player')
     this.player.anchor.setTo(0.5)
@@ -49,19 +53,18 @@ gameState.state.prototype = {
     this.xBtn.onDown.add(this.XmarkBegin, this);
 
     this.trailDots = this.add.group()
+
     this.vegets = this.add.group()
+    // game.physics.arcade.enable(this.vegets)
+    this.vegets.enableBody = true
+
     this.hotheads = this.add.group()
-
+    // game.physics.arcade.enable(this.hotheads)
     this.hotheads.enableBody = true
-    this.hotheads.physicsBodyType = Phaser.Physics.ARCADE
-    // this.hotheads.createMultiple(10, 'coin')
-    this.hotheads.setAll('outOfBoundsKill', true);
-    this.hotheads.setAll('lifespan', 5000)
-
 
     var styleScore = {font: '22px Arial', fill: '#fff'};
-    this.scoreLabel = this.add.text(10, 10, 'Score: 0', styleScore);
-    this.scoreLabel = this.add.text(10, 40, `HP: 3`, styleScore);
+    this.scoreLabel = this.add.text(10, 10, `Score: ${this.score}`, styleScore);
+    this.hpLabel = this.add.text(10, 40, `HP: ${this.hp}`, styleScore);
 
     this.vegetGenerationTimer = game.time.create(false);
     this.vegetGenerationTimer.start();
@@ -71,7 +74,7 @@ gameState.state.prototype = {
     this.hotheadGenerationTimer.start();
     this.scheduleHotHeadGeneration();
 
-    this.checkLifeHotHead = game.time.events.loop(Phaser.Timer.HALF , this.survivePlant, this)
+    // this.checkLifeHotHead = game.time.events.loop(Phaser.Timer.HALF , this.survivePlant, this)
   },
   render: function(){
     // game.debug.text("fps :" + game.time.fps, 2, 14, "#00ff00")
@@ -79,6 +82,10 @@ gameState.state.prototype = {
   },
   update: function() {
 
+    this.game.physics.arcade.collide(this.player, this.hotheads, this.calmDown, null, this);
+    this.game.physics.arcade.collide(this.player, this.vegets, this.calmDown, null, this);
+
+    this.game.physics.arcade.overlap(this.player, this.well, this.getWater, null, this);
 
     this.player.body.velocity.x = 0
     this.player.body.velocity.y = 0
@@ -177,14 +184,14 @@ gameState.state.prototype = {
   generateRandomVege: function() {
     //position
     var y = Math.floor((Math.random() * 220) + 220);
-    var x = Math.floor((Math.random() * 750) + 1);
+    var x = Math.floor((Math.random() * game.world.width - 50) + 1);
 
     this.createVeget(x, y);
   },
   generateRandomHotHead: function() {
     //position
     var y = Math.floor((Math.random() * 220) + 220);
-    var x = Math.floor((Math.random() * 750) + 1);
+    var x = Math.floor((Math.random() * game.world.width - 50) + 1);
 
     this.createHotHead(x, y);
   },
@@ -195,31 +202,35 @@ gameState.state.prototype = {
     //if there are no dead ones, create a new one
     if(!newVeget) {
       newVeget = game.add.sprite(x, y, 'veget')
-      newVeget.lifespan = 10000
+      // newVeget.lifespan = 10000
       this.vegets.add(newVeget);
     }
     else {
-      newVeget.lifespan = 10000
-      newVeget.tint = 16777215
+      // newVeget.lifespan = 10000
+      // newVeget.tint = 16777215
       newVeget.reset(x, y);
     }
+    this.vegets.setAll('body.immovable', true)
+    this.vegets.setAll('body.allowGravity', false);
   },
   createHotHead: function(x, y) {
-    console.log("create hot head");
     //look for a dead element
     var newHothead = this.hotheads.getFirstDead();
 
     //if there are no dead ones, create a new one
     if(!newHothead) {
       newHothead = game.add.sprite(x, y, 'hothead')
-      newHothead.lifespan = 5000
+      // newHothead.lifespan = 5000
       this.hotheads.add(newHothead);
     }
     else {
-      newHothead.lifespan = 5000
-      newHothead.tint = 16777215
+      // newHothead.lifespan = 5000
+      // newHothead.tint = 16777215
       newHothead.reset(x, y);
     }
+    this.hotheads.setAll('body.immovable', true)
+    this.hotheads.setAll('body.allowGravity', false);
+
   },
   survivePlant: function() {
     this.hotheads.forEachAlive((hothead) => {
@@ -237,6 +248,22 @@ gameState.state.prototype = {
         veget.tint = 16777215
       }
     })
+  },
+  getWater: function() {
+    this.isPosidon = true
+  },
+  calmDown: function(player, enemy) {
+    console.log("enemy", enemy.key);
+    if(this.isPosidon) {
+      enemy.kill()
+      this.isPosidon = false
+      if(enemy.key === "veget") {
+        this.score += 1
+      } else if(enemy.key === "hothead") {
+        this.score += 2
+      }
+      this.scoreLabel.text = `Score: ${this.score}`
+    }
   }
 
 }
