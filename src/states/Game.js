@@ -26,7 +26,9 @@ gameState.state.prototype = {
     this.sBtn = game.input.keyboard.addKey(Phaser.Keyboard.S)
     this.dBtn = game.input.keyboard.addKey(Phaser.Keyboard.D)
   },
-  preload: function() {},
+  preload: function() {
+
+  },
   create: function() {
     game.stage.backgroundColor = '#ddd'
     const style = {font: '32px Arial', fill: '#000'}
@@ -50,6 +52,12 @@ gameState.state.prototype = {
     this.vegets = this.add.group()
     this.hotheads = this.add.group()
 
+    this.hotheads.enableBody = true
+    this.hotheads.physicsBodyType = Phaser.Physics.ARCADE
+    // this.hotheads.createMultiple(10, 'coin')
+    this.hotheads.setAll('outOfBoundsKill', true);
+    this.hotheads.setAll('lifespan', 5000)
+
 
     var styleScore = {font: '22px Arial', fill: '#fff'};
     this.scoreLabel = this.add.text(10, 10, 'Score: 0', styleScore);
@@ -62,6 +70,8 @@ gameState.state.prototype = {
     this.hotheadGenerationTimer = game.time.create(false);
     this.hotheadGenerationTimer.start();
     this.scheduleHotHeadGeneration();
+
+    this.checkLifeHotHead = game.time.events.loop(Phaser.Timer.HALF , this.survivePlant, this)
   },
   render: function(){
     // game.debug.text("fps :" + game.time.fps, 2, 14, "#00ff00")
@@ -185,9 +195,12 @@ gameState.state.prototype = {
     //if there are no dead ones, create a new one
     if(!newVeget) {
       newVeget = game.add.sprite(x, y, 'veget')
+      newVeget.lifespan = 10000
       this.vegets.add(newVeget);
     }
     else {
+      newVeget.lifespan = 10000
+      newVeget.tint = 16777215
       newVeget.reset(x, y);
     }
   },
@@ -199,11 +212,31 @@ gameState.state.prototype = {
     //if there are no dead ones, create a new one
     if(!newHothead) {
       newHothead = game.add.sprite(x, y, 'hothead')
+      newHothead.lifespan = 5000
       this.hotheads.add(newHothead);
     }
     else {
+      newHothead.lifespan = 5000
+      newHothead.tint = 16777215
       newHothead.reset(x, y);
     }
+  },
+  survivePlant: function() {
+    this.hotheads.forEachAlive((hothead) => {
+      if(hothead.lifespan < 1500) {
+        hothead.tint = 0xff0000;
+      } else {
+        hothead.tint = 16777215
+      }
+    })
+
+    this.vegets.forEachAlive((veget) => {
+      if(veget.lifespan < 1500) {
+        veget.tint = 0xff0000;
+      } else {
+        veget.tint = 16777215
+      }
+    })
   }
 
 }
