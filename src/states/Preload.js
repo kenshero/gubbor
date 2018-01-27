@@ -13,7 +13,8 @@ PreloadState.state.prototype = {
     game.load.image('mark', 'assets/images/mark.png')
     game.load.image('well', 'assets/images/water-splash.png')
     game.load.image('veget', 'assets/images/boccoli.png')
-    game.load.image('hothead', 'assets/images/hothead.png')
+    game.load.image('x_key', 'assets/images/x_key2.gif')
+    game.load.image('hothead', 'assets/images/hotheadsaiya.png')
     game.load.spritesheet('player', 'assets/images/player.png', 30, 30, 2, 0, 2);
     game.load.spritesheet('ninjam', 'assets/images/ninjam.png', 40, 55, 6);
   //   game.load.spritesheet('ninjam_stand', 'assets/images/ninjam_stand.png', 34, 55, 2);
@@ -38,6 +39,7 @@ PreloadState.state.prototype = {
       this.add.text(game.width/2, 50, 'How to Play', style).anchor.setTo(0.5);
 
       style = {font: '20px Arial', fill: '#fff'};
+      this.add.sprite(game.width/2 - 165, 150, 'x_key').anchor.setTo(0.5)
       this.add.text(game.width/2, 150, 'key "X" is special skill teleport. ', style).anchor.setTo(0.5);
 
       this.add.text(game.width/2, 200, " \"Left\",\"Right\",\"Up\",\"Down\" is move.", style).anchor.setTo(0.5);

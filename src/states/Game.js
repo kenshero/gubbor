@@ -12,14 +12,14 @@ gameState.state.prototype = {
   init: function() {
     this.PLAYER_SPEED = 90
     this.VEGET_FREQUENCY = 3
-    this.HOTHEAD_FREQUENCY = 12
+    this.HOTHEAD_FREQUENCY = 9
     this.xMarking = false
     this.timeOutMarking = 4
     this.markPosition = {}
     this.currentTrails = {}
     this.isPosidon = false
     this.score = 0
-    this.timeOut = 120
+    this.timeOut = 70
     this.highScore = 0
     this.uiBlock = false
     //keyboard cursors
@@ -79,7 +79,7 @@ gameState.state.prototype = {
     this.hotheadGenerationTimer.start();
     this.scheduleHotHeadGeneration();
 
-    // this.checkLifeHotHead = game.time.events.loop(Phaser.Timer.HALF , this.survivePlant, this)
+    this.checkLifeHotHead = game.time.events.loop(Phaser.Timer.HALF , this.survivePlant, this)
     this.timeOver = game.time.events.loop(Phaser.Timer.SECOND , this.reduceTime, this)
   },
   render: function(){
@@ -195,14 +195,14 @@ gameState.state.prototype = {
   },
   generateRandomVege: function() {
     //position
-    var y = Math.floor((Math.random() * 220) + 220);
+    var y = Math.floor((Math.random() * game.world.height) + 1);
     var x = Math.floor((Math.random() * game.world.width - 50) + 1);
 
     this.createVeget(x, y);
   },
   generateRandomHotHead: function() {
     //position
-    var y = Math.floor((Math.random() * 220) + 220);
+    var y = Math.floor((Math.random() * game.world.height) + 1);
     var x = Math.floor((Math.random() * game.world.width) + 1);
 
     this.createHotHead(x, y);
@@ -214,12 +214,12 @@ gameState.state.prototype = {
     //if there are no dead ones, create a new one
     if(!newVeget) {
       newVeget = game.add.sprite(x, y, 'veget')
-      // newVeget.lifespan = 10000
+      newVeget.lifespan = 10000
       this.vegets.add(newVeget);
     }
     else {
-      // newVeget.lifespan = 10000
-      // newVeget.tint = 16777215
+      newVeget.lifespan = 10000
+      newVeget.tint = 16777215
       newVeget.reset(x, y);
     }
     this.vegets.setAll('body.immovable', true)
@@ -232,12 +232,12 @@ gameState.state.prototype = {
     //if there are no dead ones, create a new one
     if(!newHothead) {
       newHothead = game.add.sprite(x, y, 'hothead')
-      // newHothead.lifespan = 5000
+      newHothead.lifespan = 5000
       this.hotheads.add(newHothead);
     }
     else {
-      // newHothead.lifespan = 5000
-      // newHothead.tint = 16777215
+      newHothead.lifespan = 5000
+      newHothead.tint = 16777215
       newHothead.reset(x, y);
     }
     this.hotheads.setAll('body.immovable', true)
@@ -247,7 +247,7 @@ gameState.state.prototype = {
   survivePlant: function() {
     this.hotheads.forEachAlive((hothead) => {
       if(hothead.lifespan < 1500) {
-        hothead.tint = 0xff0000;
+        hothead.tint = 0x0000FF;
       } else {
         hothead.tint = 16777215
       }
