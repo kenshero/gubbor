@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -16,14 +17,7 @@ module.exports = {
       minimize: true,
       debug: false
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      comments: false,
-      compress: {
-        warnings: false,
-        drop_console: true
-      }
-    }),
+    new UglifyJSPlugin(),
     new ExtractTextPlugin({
       filename: 'static/[name].css',
       disable: false,
@@ -39,7 +33,7 @@ module.exports = {
         test: /\.js$/,
         use: ['babel-loader'],
         exclude: /node_modules/,
-        include: path.join(__dirname, './src')
+        include: path.join(__dirname, 'src')
       },
       {
         test: /\.css$/,
