@@ -12,7 +12,7 @@ PreloadState.state.prototype = {
     game.load.image('startgame', 'assets/images/startgame.png')
     game.load.image('mark', 'assets/images/mark.png')
     game.load.image('well', 'assets/images/water-splash.png')
-    game.load.image('veget', 'assets/images/veget-1.jpg')
+    game.load.image('veget', 'assets/images/boccoli.png')
     game.load.image('hothead', 'assets/images/hothead.png')
     game.load.spritesheet('player', 'assets/images/player.png', 30, 30, 2, 0, 2);
     game.load.spritesheet('ninjam', 'assets/images/ninjam.png', 40, 55, 6);

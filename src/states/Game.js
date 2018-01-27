@@ -19,7 +19,7 @@ gameState.state.prototype = {
     this.currentTrails = {}
     this.isPosidon = false
     this.score = 0
-    this.timeOut = 60
+    this.timeOut = 120
     this.highScore = 0
     this.uiBlock = false
     //keyboard cursors
@@ -125,6 +125,12 @@ gameState.state.prototype = {
     } else {
       this.player.animations.stop()
       this.player.frame = 0
+    }
+
+    if(this.isPosidon) {
+      this.player.tint = 0x0000FF
+    } else {
+      this.player.tint = 16777215
     }
   },
   XmarkBegin: function() {
