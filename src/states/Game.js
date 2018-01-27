@@ -19,7 +19,7 @@ gameState.state.prototype = {
     this.currentTrails = {}
     this.isPosidon = false
     this.score = 0
-    this.timeOut = 10
+    this.timeOut = 60
     this.highScore = 0
     this.uiBlock = false
     //keyboard cursors
@@ -43,10 +43,11 @@ gameState.state.prototype = {
     this.well = this.add.sprite(game.world.width - 100, 0, 'well')
     game.physics.arcade.enable(this.well)
 
-    this.player = this.add.sprite(game.world.width - 100, 20, 'player')
+    this.player = this.add.sprite(game.world.width - 100, 20, 'ninjam')
     this.player.anchor.setTo(0.5)
 
-    this.player.animations.add('walk', [0, 1, 0], 6, false)
+    this.player.animations.add('stand', [0, 1, 2, 3, 4, 5, 6], 6, true)
+    // this.player.animations.add('walk', [8, 9, 10, 11,  9, 10, 11], 32, true)
 
     game.physics.arcade.enable(this.player)
     this.player.body.collideWorldBounds = true
@@ -97,12 +98,12 @@ gameState.state.prototype = {
 
     if(this.cursors.left.isDown || this.aBtn.isDown) {
       this.player.body.velocity.x = -this.PLAYER_SPEED
-      this.player.scale.setTo(1, 1)
+      this.player.scale.setTo(-1, 1)
     }
 
     if(this.cursors.right.isDown || this.dBtn.isDown) {
       this.player.body.velocity.x = this.PLAYER_SPEED
-      this.player.scale.setTo(-1, 1)
+      this.player.scale.setTo(1, 1)
     }
 
     if(this.cursors.up.isDown || this.wBtn.isDown) {
@@ -120,7 +121,7 @@ gameState.state.prototype = {
     }
 
     if(this.player.body.velocity.x != 0 || this.player.body.velocity.y != 0) {
-      this.player.play('walk')
+      this.player.play('stand')
     } else {
       this.player.animations.stop()
       this.player.frame = 0

@@ -15,6 +15,9 @@ PreloadState.state.prototype = {
     game.load.image('veget', 'assets/images/veget-1.jpg')
     game.load.image('hothead', 'assets/images/hothead.png')
     game.load.spritesheet('player', 'assets/images/player.png', 30, 30, 2, 0, 2);
+    game.load.spritesheet('ninjam', 'assets/images/ninjam.png', 40, 55, 6);
+  //   game.load.spritesheet('ninjam_stand', 'assets/images/ninjam_stand.png', 34, 55, 2);
+  //   game.load.spritesheet('ninjam_walk', 'assets/images/ninjam_run.png', 34, 55, 6);
   },
   create: function() {
     this.overlay = this.add.bitmapData(game.width, game.height);
