@@ -8,10 +8,11 @@ PreloadState.state = function(){
 
 PreloadState.state.prototype = {
   preload: function() {
-    game.load.image('grass', 'assets/images/grass.jpg')
+    game.load.image('grass', 'assets/images/map.jpg')
     game.load.image('startgame', 'assets/images/startgame.png')
-    game.load.image('mark', 'assets/images/mark.png')
-    game.load.image('well', 'assets/images/water-splash.png')
+    game.load.image('mark', 'assets/images/x_blue.png')
+    game.load.image('saiya', 'assets/images/saiya_1.png')
+    game.load.image('well', 'assets/images/waterfall.png')
     game.load.image('veget', 'assets/images/boccoli.png')
     game.load.image('x_key', 'assets/images/x_key2.gif')
     game.load.image('hothead', 'assets/images/hotheadsaiya.png')

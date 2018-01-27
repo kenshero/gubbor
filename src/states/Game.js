@@ -10,7 +10,7 @@ gameState.state = function(){
 
 gameState.state.prototype = {
   init: function() {
-    this.PLAYER_SPEED = 90
+    this.PLAYER_SPEED = 220
     this.VEGET_FREQUENCY = 3
     this.HOTHEAD_FREQUENCY = 9
     this.xMarking = false
@@ -40,8 +40,13 @@ gameState.state.prototype = {
     game.add.text(game.world.centerX, game.world.centerY, "Playing", style).anchor.setTo(0.5)
     this.background = this.add.tileSprite(0, 0, game.world.width, game.world.height, 'grass')
 
-    this.well = this.add.sprite(game.world.width - 100, 0, 'well')
+    this.well = this.add.sprite(game.world.width, 0, 'well')
+    this.well.scale.setTo(0.5)
+    this.well.anchor.setTo(1, 0)
     game.physics.arcade.enable(this.well)
+
+    this.saiyaAura = this.add.sprite(game.world.width - 100, 20, 'saiya')
+    this.saiyaAura.anchor.setTo(0.5)
 
     this.player = this.add.sprite(game.world.width - 100, 20, 'ninjam')
     this.player.anchor.setTo(0.5)
@@ -66,7 +71,7 @@ gameState.state.prototype = {
     this.hotheads.enableBody = true
 
     var styleScore = {font: '22px Arial', fill: '#fff'};
-    this.scoreLabel = this.add.text(10, 10, this.score, styleScore);
+    this.scoreLabel = this.add.text(10, 10, "0", styleScore);
 
     this.timeOutLabel = this.add.text(game.world.centerX, 0, this.timeOut, styleScore)
     this.timeOutLabel.anchor.setTo(0.5, 0)
@@ -95,6 +100,17 @@ gameState.state.prototype = {
 
     this.player.body.velocity.x = 0
     this.player.body.velocity.y = 0
+
+    if(this.isPosidon) {
+      this.player.tint = 0x0000FF
+      this.saiyaAura.visible = true
+    } else {
+      this.saiyaAura.visible = false
+      this.player.tint = 16777215
+    }
+
+    this.saiyaAura.x = this.player.position.x;
+    this.saiyaAura.y = this.player.position.y;
 
     if(this.cursors.left.isDown || this.aBtn.isDown) {
       this.player.body.velocity.x = -this.PLAYER_SPEED
@@ -127,17 +143,13 @@ gameState.state.prototype = {
       this.player.frame = 0
     }
 
-    if(this.isPosidon) {
-      this.player.tint = 0x0000FF
-    } else {
-      this.player.tint = 16777215
-    }
   },
   XmarkBegin: function() {
     if(!this.xMarking) {
       this.xMarking = true
       this.mark = this.add.sprite(this.player.position.x, this.player.position.y, 'mark')
       this.mark.anchor.setTo(0.5)
+      this.mark.scale.setTo(0.5)
       this.setCurrentTrails()
 
       this.player.bringToTop();
@@ -169,7 +181,7 @@ gameState.state.prototype = {
 
     bmd.ctx.beginPath();
     bmd.ctx.rect(0, 0, width, height);
-    bmd.ctx.fillStyle = 'red';
+    bmd.ctx.fillStyle = '#0008ff';
     bmd.ctx.fill();
     const dot = game.add.sprite(this.player.position.x, this.player.position.y, bmd)
     this.setCurrentTrails()
@@ -246,7 +258,7 @@ gameState.state.prototype = {
   },
   survivePlant: function() {
     this.hotheads.forEachAlive((hothead) => {
-      if(hothead.lifespan < 1500) {
+      if(hothead.lifespan < 2000) {
         hothead.tint = 0x0000FF;
       } else {
         hothead.tint = 16777215
