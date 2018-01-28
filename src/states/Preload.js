@@ -34,8 +34,8 @@ PreloadState.state.prototype = {
     this.panel = this.add.sprite(0, game.height, this.overlay);
     this.panel.alpha = 0.80;
 
-    // this.orchestra = this.add.audio('orchestra');
-    // this.orchestra.play();
+    this.orchestra = this.add.audio('orchestra');
+    this.orchestra.play();
 
     //overlay raising tween animation
     var gameOverPanel = this.add.tween(this.panel);
@@ -60,7 +60,7 @@ PreloadState.state.prototype = {
     gameOverPanel.start();
   },
   startGame: function() {
-    // this.orchestra.stop()
+    this.orchestra.stop()
     game.state.start('GameState')
   }
 }
