@@ -44,7 +44,7 @@ PreloadState.state.prototype = {
     //stop all movement after the overlay reaches the top
     gameOverPanel.onComplete.add(function(){
       var style = {font: '30px Arial', fill: '#fff'};
-      this.add.text(game.width/2, 50, 'How to Play', style).anchor.setTo(0.5);
+      this.add.text(game.width/2, 50, 'กลับบ่อ', style).anchor.setTo(0.5);
 
       style = {font: '20px Arial', fill: '#fff'};
       this.add.sprite(game.width/2 - 165, 150, 'x_key').anchor.setTo(0.5)
