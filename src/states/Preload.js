@@ -18,6 +18,9 @@ PreloadState.state.prototype = {
     game.load.image('hothead', 'assets/images/hotheadsaiya.png')
     game.load.spritesheet('player', 'assets/images/player.png', 30, 30, 2, 0, 2);
     game.load.spritesheet('ninjam', 'assets/images/ninjam.png', 40, 55, 6);
+    game.load.audio('charge_saiya', ['assets/sounds/charge_saiya.mp3'])
+    game.load.audio('aura_saiya', ['assets/sounds/aura_saiya.mp3'])
+    game.load.audio('get_score', ['assets/sounds/get_score.wav'])
   //   game.load.spritesheet('ninjam_stand', 'assets/images/ninjam_stand.png', 34, 55, 2);
   //   game.load.spritesheet('ninjam_walk', 'assets/images/ninjam_run.png', 34, 55, 6);
   },

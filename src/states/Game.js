@@ -86,6 +86,13 @@ gameState.state.prototype = {
 
     this.checkLifeHotHead = game.time.events.loop(Phaser.Timer.HALF , this.survivePlant, this)
     this.timeOver = game.time.events.loop(Phaser.Timer.SECOND , this.reduceTime, this)
+
+    this.chargeSaiya = this.add.audio('charge_saiya')
+    this.chargeSaiya.volume = 0.5;
+
+    this.auraSaiya = this.add.audio('aura_saiya')
+    this.getScoreSound = this.add.audio('get_score')
+
   },
   render: function(){
     // game.debug.text("fps :" + game.time.fps, 2, 14, "#00ff00")
@@ -274,12 +281,19 @@ gameState.state.prototype = {
     })
   },
   getWater: function() {
+    if(this.isPosidon) {
+      return
+    }
+    console.log("aaaaaaaaaa");
+    this.chargeSaiya.play()
+    this.auraSaiya.play()
     this.isPosidon = true
   },
   calmDown: function(player, enemy) {
-    console.log("enemy", enemy.key);
     if(this.isPosidon) {
       enemy.kill()
+      this.auraSaiya.stop()
+      this.getScoreSound.play()
       this.isPosidon = false
       if(enemy.key === "veget") {
         this.score += 1
