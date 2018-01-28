@@ -11,8 +11,8 @@ gameState.state = function(){
 gameState.state.prototype = {
   init: function() {
     this.PLAYER_SPEED = 220
-    this.VEGET_FREQUENCY = 3
-    this.HOTHEAD_FREQUENCY = 9
+    this.VEGET_FREQUENCY = 1
+    this.HOTHEAD_FREQUENCY = 8
     this.xMarking = false
     this.timeOutMarking = 4
     this.markPosition = {}
@@ -21,7 +21,7 @@ gameState.state.prototype = {
     this.score = 0
     this.timeOut = 70
     this.highScore = 0
-    this.uiBlock = false
+    this.gameEnd = false
     //keyboard cursors
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.xBtn = game.input.keyboard.addKey(Phaser.Keyboard.X)
@@ -284,9 +284,10 @@ gameState.state.prototype = {
     if(this.isPosidon) {
       return
     }
-    console.log("aaaaaaaaaa");
-    this.chargeSaiya.play()
-    this.auraSaiya.play()
+    if(!this.gameEnd) {
+      this.chargeSaiya.play()
+      this.auraSaiya.play()
+    }
     this.isPosidon = true
   },
   calmDown: function(player, enemy) {
@@ -312,7 +313,9 @@ gameState.state.prototype = {
     }
   },
   gameOver: function() {
+    this.gameEnd = true
     this.updateHighscore()
+    this.auraSaiya.stop()
     game.time.events.remove(this.timeOver)
 
     //game over overlay
