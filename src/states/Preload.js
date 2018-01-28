@@ -21,6 +21,7 @@ PreloadState.state.prototype = {
     game.load.audio('charge_saiya', ['assets/sounds/charge_saiya.mp3'])
     game.load.audio('aura_saiya', ['assets/sounds/aura_saiya.mp3'])
     game.load.audio('get_score', ['assets/sounds/get_score.wav'])
+    this.load.audio('orchestra', ['assets/sounds/8bit-orchestra.mp3']);
   //   game.load.spritesheet('ninjam_stand', 'assets/images/ninjam_stand.png', 34, 55, 2);
   //   game.load.spritesheet('ninjam_walk', 'assets/images/ninjam_run.png', 34, 55, 6);
   },
@@ -32,6 +33,9 @@ PreloadState.state.prototype = {
     //sprite for the overlay
     this.panel = this.add.sprite(0, game.height, this.overlay);
     this.panel.alpha = 0.80;
+
+    this.orchestra = this.add.audio('orchestra');
+    this.orchestra.play();
 
     //overlay raising tween animation
     var gameOverPanel = this.add.tween(this.panel);
@@ -56,6 +60,7 @@ PreloadState.state.prototype = {
     gameOverPanel.start();
   },
   startGame: function() {
+    this.orchestra.stop()
     game.state.start('GameState')
   }
 }
